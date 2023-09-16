@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,4 +5,41 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model appointment {
+  id           Int       @id(map: "appointment_pk") @default(autoincrement())
+  datetime     DateTime  @db.Timestamptz(6)
+  actions      String?
+  treatment_id Int
+  treatment    treatment @relation(fields: [treatment_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "appointment_fk")
+}
+
+model patient {
+  first_name String      @db.VarChar
+  last_name  String      @db.VarChar
+  city       String?     @db.VarChar
+  phone      String?     @db.VarChar
+  extra_info String?
+  id         Int         @id(map: "patient_pk") @default(autoincrement())
+  treatments treatment[]
+}
+
+model payment {
+  id           Int       @id(map: "payment_pk") @default(autoincrement())
+  date         DateTime  @db.Date
+  amount       Decimal   @db.Decimal(10, 2)
+  treatment_id Int
+  treatment    treatment @relation(fields: [treatment_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "payment_fk")
+}
+
+model treatment {
+  id           Int           @id(map: "treatment_pk") @default(autoincrement())
+  start_date   DateTime      @db.Date
+  title        String        @db.VarChar
+  patient_id   Int
+  finished     Boolean       @default(false)
+  appointments appointment[]
+  payments     payment[]
+  patient      patient       @relation(fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "treatment_fk")
 }
