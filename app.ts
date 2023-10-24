@@ -7,6 +7,8 @@ import paymentRoutes from './routes/paymentRoutes.js'
 const app = express()
 const port = 3000
 
+app.use(express.json())
+
 app.use('/patients', patientRoutes)
 app.use('/treatments', treatmentRoutes)
 app.use('/appointments', appointmentRoutes)
