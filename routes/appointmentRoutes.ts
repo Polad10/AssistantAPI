@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
   res.json(appointments)
 })
 
-router.post('/', appointmentPostValidator, async (req:Request, res:Response) => {
+router.post('/', appointmentPostValidator, async (req: Request, res: Response) => {
   try {
     const appointment = await prisma.appointment.create({
       data: req.body
