@@ -3,7 +3,7 @@ import validationErrorCheck from "./validationErrorCheck.js"
 
 const appointmentPostValidator = [
   body('datetime').notEmpty().isISO8601().toDate(),
-  body('treatment_id').notEmpty().isInt(),
+  body('treatment_id').notEmpty().isInt().toInt(),
   validationErrorCheck
 ]
 
