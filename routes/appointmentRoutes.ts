@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client'
 import httpStatusCodes from '../constants/httpStatusCodes.js';
-import appointmentPostValidator from './validators/appointmentValidators.js';
+import {appointmentPostValidator, appointmentPutValidator } from './validators/appointmentValidators.js';
 
 const router = express.Router()
 const prisma = new PrismaClient()
@@ -23,6 +23,20 @@ router.post('/', appointmentPostValidator, async (req: Request, res: Response) =
   catch(ex) {
     res.sendStatus(httpStatusCodes.internalServerError)
   }  
+})
+
+router.put('/', appointmentPutValidator, async (req: Request, res: Response) => {
+  try {
+    const appointment = await prisma.appointment.update({
+      where: {id: req.body.id},
+      data: req.body
+    })
+
+    res.status(httpStatusCodes.ok).json(appointment)
+  }
+  catch(ex) {
+    res.sendStatus(httpStatusCodes.internalServerError)
+  }
 })
 
 export default router

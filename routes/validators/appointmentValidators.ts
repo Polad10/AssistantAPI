@@ -7,4 +7,9 @@ const appointmentPostValidator = [
   validationErrorCheck
 ]
 
-export default appointmentPostValidator
+const appointmentPutValidator = [
+  body('id').notEmpty().isInt().toInt(),
+  ...appointmentPostValidator
+]
+
+export { appointmentPostValidator, appointmentPutValidator }
