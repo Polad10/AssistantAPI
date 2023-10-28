@@ -1,4 +1,4 @@
-import { body } from "express-validator"
+import { body, param } from "express-validator"
 import validationErrorCheck from "./validationErrorCheck.js"
 
 const appointmentPostValidator = [
@@ -12,4 +12,9 @@ const appointmentPutValidator = [
   ...appointmentPostValidator
 ]
 
-export { appointmentPostValidator, appointmentPutValidator }
+const appointmentDeleteValidator = [
+  param('id').notEmpty().isInt().toInt(),
+  validationErrorCheck
+]
+
+export { appointmentPostValidator, appointmentPutValidator, appointmentDeleteValidator }
