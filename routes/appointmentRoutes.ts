@@ -37,6 +37,12 @@ router.put('/', appointmentPutValidator, async (req: Request, res: Response) => 
     res.status(httpStatusCodes.ok).json(appointment)
   }
   catch(ex) {
+    if(ex instanceof PrismaClientKnownRequestError) {
+      if(ex.code === prismaExceptionCodes.recordNotFound) {
+        return res.status(httpStatusCodes.notFound).json({error: 'Appointment not found'})
+      }
+    }
+    
     res.sendStatus(httpStatusCodes.internalServerError)
   }
 })
