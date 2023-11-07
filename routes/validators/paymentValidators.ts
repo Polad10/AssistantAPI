@@ -1,4 +1,4 @@
-import { body } from "express-validator"
+import { body, param } from "express-validator"
 import validationErrorCheck from "./validationErrorCheck.js"
 
 const paymentPostValidator = [
@@ -8,4 +8,14 @@ const paymentPostValidator = [
   validationErrorCheck
 ]
 
-export default paymentPostValidator
+const paymentPutValidator = [
+  body('id').notEmpty().isInt().toInt(),
+  ...paymentPostValidator
+]
+
+const paymentDeleteValidator = [
+  param('id').notEmpty().isInt().toInt(),
+  validationErrorCheck
+]
+
+export { paymentPostValidator, paymentPutValidator, paymentDeleteValidator }
