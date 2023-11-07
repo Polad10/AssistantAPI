@@ -1,4 +1,4 @@
-import { body } from "express-validator"
+import { body, param } from "express-validator"
 import validationErrorCheck from "./validationErrorCheck.js"
 
 const treatmentPostValidator = [
@@ -8,4 +8,14 @@ const treatmentPostValidator = [
   validationErrorCheck
 ]
 
-export default treatmentPostValidator
+const treatmentPutValidator = [
+  body('id').notEmpty().isInt().toInt(),
+  ...treatmentPostValidator
+]
+
+const treatmentDeleteValidator = [
+  param('id').notEmpty().isInt().toInt(),
+  validationErrorCheck
+]
+
+export { treatmentPostValidator, treatmentPutValidator, treatmentDeleteValidator }
