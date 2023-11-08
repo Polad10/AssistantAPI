@@ -23,6 +23,7 @@ router.post('/', treatmentPostValidator, async (req: Request, res: Response) => 
     res.status(httpStatusCodes.created).json(treatment)
   }
   catch(ex) {
+    console.log(ex)
     res.sendStatus(httpStatusCodes.internalServerError)
   }  
 })

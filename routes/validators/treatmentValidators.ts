@@ -5,6 +5,7 @@ const treatmentPostValidator = [
   body('start_date').notEmpty().isISO8601().toDate(),
   body('title').notEmpty(),
   body('patient_id').notEmpty().isInt().toInt(),
+  body('price').notEmpty().isFloat().toFloat(),
   validationErrorCheck
 ]
 
