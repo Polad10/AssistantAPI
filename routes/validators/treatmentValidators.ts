@@ -3,6 +3,7 @@ import validationErrorCheck from "./validationErrorCheck.js"
 
 const treatmentPostValidator = [
   body('start_date').notEmpty().isISO8601().toDate(),
+  body('end_date').isISO8601().toDate().optional({values: 'null'}),
   body('title').notEmpty(),
   body('patient_id').notEmpty().isInt().toInt(),
   body('price').notEmpty().isFloat().toFloat(),
