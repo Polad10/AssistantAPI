@@ -38,7 +38,6 @@ model treatment {
   start_date   DateTime      @db.Date
   title        String        @db.VarChar
   patient_id   Int
-  finished     Boolean       @default(false)
   price        Decimal       @db.Decimal(10, 2)
   end_date     DateTime?     @db.Date
   appointments appointment[]
