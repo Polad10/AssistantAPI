@@ -4,6 +4,7 @@ import validationErrorCheck from "./validationErrorCheck.js"
 const patientPostValidator = [
   body('first_name').notEmpty(),
   body('last_name').notEmpty(),
+  body('dob').if(value => value).isISO8601().toDate(),
   validationErrorCheck
 ]
 

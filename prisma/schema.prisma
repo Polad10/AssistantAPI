@@ -22,6 +22,7 @@ model patient {
   phone      String?     @db.VarChar
   extra_info String?
   id         Int         @id(map: "patient_pk") @default(autoincrement())
+  dob        DateTime?   @db.Date
   treatments treatment[]
 }
 
