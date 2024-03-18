@@ -12,7 +12,11 @@ model appointment {
   datetime     DateTime  @db.Timestamptz(6)
   actions      String?
   treatment_id Int
+  user_id      String    @db.VarChar
   treatment    treatment @relation(fields: [treatment_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "appointment_fk")
+  user         user      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "appointment_user_fk")
+
+  @@index([user_id])
 }
 
 model patient {
@@ -23,7 +27,11 @@ model patient {
   extra_info String?
   id         Int         @id(map: "patient_pk") @default(autoincrement())
   dob        DateTime?   @db.Date
+  user_id    String      @db.VarChar
+  user       user        @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "patient_fk")
   treatments treatment[]
+
+  @@index([user_id])
 }
 
 model payment {
@@ -31,7 +39,11 @@ model payment {
   date         DateTime  @db.Date
   amount       Decimal   @db.Decimal(10, 2)
   treatment_id Int
+  user_id      String    @db.VarChar
   treatment    treatment @relation(fields: [treatment_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "payment_fk")
+  user         user      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "payment_user_fk")
+
+  @@index([user_id])
 }
 
 model treatment {
@@ -41,7 +53,20 @@ model treatment {
   patient_id   Int
   price        Decimal       @db.Decimal(10, 2)
   end_date     DateTime?     @db.Date
+  user_id      String        @db.VarChar
   appointments appointment[]
   payments     payment[]
   patient      patient       @relation(fields: [patient_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "treatment_fk")
+  user         user          @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "treatment_user_fk")
+
+  @@index([user_id])
+}
+
+model user {
+  id          String        @id(map: "user_pk") @db.VarChar
+  email       String        @unique(map: "user_un") @db.VarChar
+  appointment appointment[]
+  patient     patient[]
+  payment     payment[]
+  treatment   treatment[]
 }

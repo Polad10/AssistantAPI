@@ -9,7 +9,9 @@ const router = express.Router()
 const prisma = new PrismaClient()
 
 router.get('/', async (req, res) => {
-  const payments = await prisma.payment.findMany()
+  const payments = await prisma.payment.findMany({
+    where: {user_id: res.locals.userId}
+  })
   
   res.json(payments)
 })
@@ -17,7 +19,7 @@ router.get('/', async (req, res) => {
 router.post('/', paymentPostValidator, async (req: Request, res: Response) => {
   try {
     const payment = await prisma.payment.create({
-      data: req.body
+      data: {...req.body, user_id: res.locals.userId}
     })
 
     res.status(httpStatusCodes.created).json(payment)
@@ -30,7 +32,7 @@ router.post('/', paymentPostValidator, async (req: Request, res: Response) => {
 router.put('/', paymentPutValidator, async (req: Request, res: Response) => {
   try {
     const payment = await prisma.payment.update({
-      where: {id: req.body.id},
+      where: {id: req.body.id, user_id: res.locals.userId},
       data: req.body
     })
 
@@ -50,7 +52,7 @@ router.put('/', paymentPutValidator, async (req: Request, res: Response) => {
 router.delete('/:id', paymentDeleteValidator, async (req: Request, res: Response) => {
   try {
     await prisma.payment.delete({
-      where: {id: Number(req.params.id)}
+      where: {id: Number(req.params.id), user_id: res.locals.userId}
     })
 
     res.sendStatus(httpStatusCodes.noContent)

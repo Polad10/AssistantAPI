@@ -9,7 +9,9 @@ const router = express.Router()
 const prisma = new PrismaClient()
 
 router.get('/', async (req, res) => {
-  const treatments = await prisma.treatment.findMany()
+  const treatments = await prisma.treatment.findMany({
+    where: {user_id: res.locals.userId}
+  })
   
   res.json(treatments)
 })
@@ -17,13 +19,12 @@ router.get('/', async (req, res) => {
 router.post('/', treatmentPostValidator, async (req: Request, res: Response) => {
   try {
     const treatment = await prisma.treatment.create({
-      data: req.body
+      data: {...req.body, user_id: res.locals.userId}
     })
 
     res.status(httpStatusCodes.created).json(treatment)
   }
   catch(ex) {
-    console.log(ex)
     res.sendStatus(httpStatusCodes.internalServerError)
   }  
 })
@@ -31,7 +32,7 @@ router.post('/', treatmentPostValidator, async (req: Request, res: Response) => 
 router.put('/', treatmentPutValidator, async (req: Request, res: Response) => {
   try {
     const treatment = await prisma.treatment.update({
-      where: {id: req.body.id},
+      where: {id: req.body.id, user_id: res.locals.userId},
       data: req.body
     })
 
@@ -51,13 +52,12 @@ router.put('/', treatmentPutValidator, async (req: Request, res: Response) => {
 router.delete('/:id', treatmentDeleteValidator, async (req: Request, res: Response) => {
   try {
     await prisma.treatment.delete({
-      where: {id: Number(req.params.id)}
+      where: {id: Number(req.params.id), user_id: res.locals.userId}
     })
 
     res.sendStatus(httpStatusCodes.noContent)
   }
   catch(ex) {
-    console.log(ex)
     if(ex instanceof PrismaClientKnownRequestError) {
       if(ex.code === prismaExceptionCodes.recordNotFound) {
         return res.status(httpStatusCodes.notFound).json({error: 'Treatment not found'})

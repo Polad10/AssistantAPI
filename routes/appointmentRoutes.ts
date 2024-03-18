@@ -9,7 +9,9 @@ const router = express.Router()
 const prisma = new PrismaClient()
 
 router.get('/', async (req, res) => {
-  const appointments = await prisma.appointment.findMany()
+  const appointments = await prisma.appointment.findMany({
+    where: {user_id: res.locals.userId}
+  })
   
   res.json(appointments)
 })
@@ -17,7 +19,7 @@ router.get('/', async (req, res) => {
 router.post('/', appointmentPostValidator, async (req: Request, res: Response) => {
   try {
     const appointment = await prisma.appointment.create({
-      data: req.body
+      data: { ...req.body, user_id: res.locals.userId }
     })
 
     res.status(httpStatusCodes.created).json(appointment)
@@ -30,7 +32,7 @@ router.post('/', appointmentPostValidator, async (req: Request, res: Response) =
 router.put('/', appointmentPutValidator, async (req: Request, res: Response) => {
   try {
     const appointment = await prisma.appointment.update({
-      where: {id: req.body.id},
+      where: {id: req.body.id, user_id: res.locals.userId},
       data: req.body
     })
 
@@ -50,7 +52,7 @@ router.put('/', appointmentPutValidator, async (req: Request, res: Response) => 
 router.delete('/:id', appointmentDeleteValidator, async (req: Request, res: Response) => {
   try {
     await prisma.appointment.delete({
-      where: {id: Number(req.params.id)}
+      where: {id: Number(req.params.id), user_id: res.locals.userId}
     })
 
     res.sendStatus(httpStatusCodes.noContent)
