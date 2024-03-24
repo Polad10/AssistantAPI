@@ -9,11 +9,17 @@ const router = express.Router()
 const prisma = new PrismaClient()
 
 router.get('/', async (req, res) => {
-  const treatments = await prisma.treatment.findMany({
-    where: {user_id: res.locals.userId}
-  })
-  
-  res.json(treatments)
+  try
+  {
+    const treatments = await prisma.treatment.findMany({
+      where: {user_id: res.locals.userId}
+    })
+    
+    res.json(treatments)
+  }
+  catch(ex) {
+    res.sendStatus(httpStatusCodes.internalServerError)
+  } 
 })
 
 router.post('/', treatmentPostValidator, async (req: Request, res: Response) => {

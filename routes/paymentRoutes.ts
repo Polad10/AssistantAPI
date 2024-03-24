@@ -9,11 +9,17 @@ const router = express.Router()
 const prisma = new PrismaClient()
 
 router.get('/', async (req, res) => {
-  const payments = await prisma.payment.findMany({
-    where: {user_id: res.locals.userId}
-  })
-  
-  res.json(payments)
+  try
+  {
+    const payments = await prisma.payment.findMany({
+      where: {user_id: res.locals.userId}
+    })
+    
+    res.json(payments)
+  }
+  catch(ex) {
+    res.sendStatus(httpStatusCodes.internalServerError)
+  }  
 })
 
 router.post('/', paymentPostValidator, async (req: Request, res: Response) => {
